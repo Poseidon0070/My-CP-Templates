@@ -30,7 +30,8 @@
 			"#define ss     second ",
 			"#define int    long long",
 			"#define endl   \"\\n\"",
-			"#define TxtIO   freopen(\"input.txt\",\"r\",stdin); freopen(\"output.txt\",\"w\",stdout);",
+			"#define TxtIO  freopen(\"input.txt\",\"r\",stdin); \\",
+							"\t\t\t   freopen(\"output.txt\",\"w\",stdout);",
 			"using namespace std;",
 			"const int  M  = 1e9+7;",
 			"const int  N  = 1e5+7;",
@@ -73,7 +74,7 @@
 			"using namespace std;",
 			"template<class T> using PBDS = tree<T, null_type, less<T>, rb_tree_tag,tree_order_statistics_node_update>;",
 			"//*st.find_by_order(index) //st.order_of_key(value)",
-			"//Other functions : st.lower_bound(),st.upper_bound(), st.erase() all works the same!!!!",
+			"//Other functions : st.lower_bound(),st.upper_bound(), st.erase() all works same!!!!",
 			"const int  M  = 1e9+7;",
 			"const int  N  = 1e5+7;",
 			"signed main()",
@@ -90,16 +91,23 @@
 		],
 		"description": "Log output to console"
 	},
-	"Display": {
-		"prefix": "dsp",
+	"Vector_display": {
+		"prefix": "display",
 		"body": [
-			"for (auto &i:v){",
+			"for(int i{};i<v.size();i++) cout << v[i] << \" \\n\"[i == v.size()-1];"
+		],
+		"description": "Log output to console"
+	},
+	"Set_display": {
+		"prefix": "sdisplay",
+		"body": [
+			"for (auto &i:st$0){",
 			"\tcout << i << \" \";",
 			"}cout << \"\\n\";",
 		],
 		"description": "Log output to console"
 	},
-	"2D_Display": {
+	"2D_display": {
 		"prefix": "2ddsp",
 		"body": [
 			"for(int i{};i<r;i++){",
@@ -111,10 +119,10 @@
 		],
 		"description": "Log output to console"
 	},
-	"Map_Display": {
+	"Map_display": {
 		"prefix": "mdsp",
 		"body": [
-			"for (auto &i:mp){",
+			"for (auto &i:mp$0){",
 			"\tcout << i.ff <<\" \"<< i.ss << \"\\n\";",
 			"}",
 		],
@@ -220,7 +228,7 @@
 	"LCM": {
 		"prefix": "lcm",
 		"body": [
-			"ll gcd(ll a, ll b) {if (b == 0)return a; return gcd(b, a % b);}", //__gcd
+			"ll gcd(ll a, ll b) {if (b == 0)return a; return gcd(b, a % b);}",
 			"ll lcm(ll a, ll b) {return (a / gcd(a, b) * b);}",
 		],
 		"description": "Log output to console"
@@ -410,16 +418,10 @@
 		"prefix": "binpow",
 		"body": [
 			"int binpow(int a,int b){",
-				"\ta = a%MOD;",
-				"\tif(b == 0){",
-					"\t\treturn 1;",
-				"\t}",
-				"\tint p = binpow(a,b/2)%MOD;",
-				"\tif(b&1){",
-					"\t\treturn (((p*p)%MOD)*a)%MOD;",
-				"\t}else{",
-					"\t\treturn (p*p)%MOD;",
-				"\t}",
+				"\tif(b == 0) return 1;",
+				"\tint p = binpow(a,b/2)%M;",
+				"\tif(b&1) return (((p*p)%M)*a)%M; ",
+				"\treturn (p*p)%M;",
 			"}",
 		],
 		"description": "Log output to console"
@@ -464,17 +466,11 @@
 		"description": "Log output to console"
 	},
 	"Modulus": {
-		"prefix": "modfun",
+		"prefix": "modop",
 		"body": [
-			"int mod (int x){",
-				"\treturn ((x%MOD + MOD)%MOD);",
-			"}",
-			"int add(int a,int b){",
-				"\treturn mod(mod(a)+mod(b));",
-			"}",
-			"int mul(int a,int b){",
-				"\treturn mod(mod(a)*mod(b));",
-			"}",
+			"int mod (int x){return (x%M + M)%M;}",
+			"int add(int a,int b){return mod(mod(a)+mod(b));}",
+			"int mul(int a,int b){return mod(mod(a)*mod(b));}",
 		],
 		"description": "Log output to console"
 	},
@@ -482,16 +478,35 @@
 		"prefix": "combinatorics",
 		"body": [
 			"int factorial(int n) {",
-				"\tint factorial = 1;",
+				"\tint f = 1;",
 				"\tfor (int i = 2; i <= n; i++)",
-					"\t\tfactorial = factorial * i;",
-				"\treturn factorial;",
+					"\t\tf = f * i;",
+				"\treturn f;",
 			"}",
-			"int nCr(int n, int r) {",
-				"\treturn factorial(n) / (factorial(r) * factorial(n - r));",
+			"int gcdEx(int a, int b, int* x, int* y) {",
+				"\t// Base Case",
+				"\tif (a == 0) {",
+					"\t\t*x = 0, *y = 1;",
+					"\t\treturn b;",
+				"\t}",
+				"\tint x1, y1;",
+				"\tint gcd = gcdEx(b % a, a, &x1, &y1);",
+				"\t*x = y1 - (b / a) * x1;",
+				"\t*y = x1;",
+				"\treturn gcd;",
 			"}",
-			"int nPr(int n, int r)",
-			"{",
+			
+			"int inv(int A) {",
+				"\tint x, y;",
+				"\tint g = gcdEx(A, M, &x, &y);",
+				"\tint res = (x % M + M) % M;",
+				"\treturn res;",
+			"}",
+			"int nCr(int a,int b){",
+				"\tif (b < 0 or a < 0) return 0;",
+				"\treturn (((factorial(a) * inv(factorial(b)))%M * inv(factorial(a - b)))%M + M)%M;",
+			"}",
+			"int nPr(int n, int r) {",
 				"\treturn factorial(n) / factorial(n - r);",
 			"}",
 		],
@@ -524,7 +539,7 @@
 			"int ceiln(int a,int b){",
 				"\treturn (a+b-1)/b;",
 			"}",
-		],
+		], 
 		"description": "Log output to console"
 	},
 	"PrimeFactor": {
@@ -643,7 +658,7 @@
 		"description": "Log output to console"
 	},
 	"NO": {
-		"prefix": "no",
+		"prefix": "noo",
 		"body": [
 			"cout << \"NO\" << \"\\n\";"
 		],
@@ -839,6 +854,118 @@
 				],
 				"description": "Log output to console"
 			},
+			"Edge": {
+				"prefix": "graphEdge",
+				"body": [
+					"class edge{",
+						"public:",
+							"\tint vtc,nbr,wt;",
+							"\tedge(int a,int b,int c){",
+								"\t\tthis->vtc = a;",
+								"\t\tthis->nbr = b;",
+								"\t\tthis->wt = c;",
+							"\t}",
+						"};",
+				],
+				"description": "Log output to console"
+			},
+			"Move1": {
+				"prefix": "move1",
+				"body": [
+					"vector<pair<int,int>> mov = {{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1},{-1,0}};"
+				],
+				"description": "Log output to console"
+			},
+			"Move2": {
+				"prefix": "move2",
+				"body": [
+					"vector<pair<int,int>> mov = {{0,1},{1,0},{0,-1},{-1,0}};"
+				],
+				"description": "Log output to console"
+			},
+			"issafe": {
+				"prefix": "issafe",
+				"body": [
+					"bool issafe(int i,int j) {return (i >= 0 && j >= 0 && i < n && j < m);}"
+				],
+				"description": "Log output to console"
+			},
+			"findMex": {
+				"prefix": "findMex",
+				"body": [
+					"int findMex(vector<int> &v){",
+						"\tUMII mp;",
+						"\tint n = v.size();",
+						"\tfor(int i{};i<n;i++){",
+							"\t\tif(i < n) mp[v[i]]++;",
+						"\t}",
+						"\tint mex = 0;",
+						"\twhile(mex < n && mp[mex]) mex++;",
+						"\treturn mex;",
+					"}",
+				],
+				"description": "Log output to console"
+			},
+			"Int_to_Binary": {
+				"prefix": "toBinary",
+				"body": [
+					"string X(int num,int size){",
+						"\tstring z(size,'0');",
+						"\tfor(int i{};i<size;i++) if(num&(1 << i)) z[size-1-i] = '1';",
+						"\treturn z;",
+					"}",
+				],
+				"description": "Log output to console"
+			},
+			"Sum of Digits": {
+				"prefix": "sum_of_digit",
+				"body": [
+					"int sum_of_digit(int n){",
+						"\tint sum{};",
+						"\twhile(n){",
+							"\t\tsum += n%10; n /= 10;",
+						"\t}",
+						"\treturn sum;",
+					"}",
+				],
+				"description": "Log output to console"
+			},
+			"Modulo Inverse": {
+				"prefix": "modulo_inverse",
+				"body": [
+					"long long fact(int n) {",
+						"\tlong long result = 1;",
+						"\tfor (int i = 1; i <= n; ++i) {",
+							"\t\tresult = (result * i) % M;",
+						"\t}",
+						"\treturn result;",
+					"}",
+					"",
+					"long long modInverse(long long a, long long m) {",
+						"\tlong long m0 = m;",
+						"\tlong long y = 0, x = 1;",
+						"\tif (m == 1) return 1; ",
+						"\twhile (a > 1) {",
+							"\t\tlong long q = a / m;",
+							"\t\tlong long t = m;",
+							"\t\tm = a % m, a = t;",
+							"\t\tt = y;",
+							"\t\ty = x - q * y;",
+						"\tx = t;",
+						"\t}",
+						"\tif (x < 0) x += m0;",
+						"\treturn x;",
+					"}",
+					"",
+					"long long factDivisionMod(int a, int b) {",
+						"\tlong long numerator = fact(a);", // modify to a if a is already factorial
+						"\tlong long denominator = modInverse(b, M); ",
+						"\tlong long result = (numerator * denominator) % M;",
+						"\treturn result;",
+					"}",
+				],
+				"description": "Log output to console"
+			}
 			
 		}
 		
